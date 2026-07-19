@@ -22,14 +22,14 @@ class Board{
     }
 
     public String print_board(){
-        String gowno = "";
+        String string = "";
         for(int i = 0; i < App.ROWS; i++){
             for( int j = 0; j < App.COLUMNS; j++){
-                gowno+=String.valueOf(grid[i][j]);
+                string+=String.valueOf(grid[i][j]);
             }
-            gowno+="\n";
+            string+="\n";
         }
-        return gowno;
+        return string;
     }
 
     public int[][] rotateMatrix(int tab[][]){
