@@ -1,10 +1,10 @@
-package src;
+package tetris;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import src.Board.RotationResult;
+import tetris.Board.RotationResult;
 
 import java.util.*;
 

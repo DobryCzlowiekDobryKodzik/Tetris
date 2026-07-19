@@ -1,4 +1,4 @@
-package src;
+package tetris;
 
 import java.awt.*;
 
