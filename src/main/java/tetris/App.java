@@ -19,8 +19,7 @@ class App extends JPanel implements Runnable, KeyListener{
     static final int HEIGHT = ROWS * TILE_SIZE;
     static final int WIDTH = COLUMNS * TILE_SIZE;
 
-    static int x = 4 * TILE_SIZE;
-    static int y = 0;
+    Piece current = new Piece(4 * TILE_SIZE, 0);
     
     int fallSpeed = 600;
 
@@ -43,24 +42,23 @@ class App extends JPanel implements Runnable, KeyListener{
 
     public void update(){
 
-        if(!board.is_landed(x/TILE_SIZE, y/TILE_SIZE)){
+        if(!board.is_landed(current.x/TILE_SIZE, current.y/TILE_SIZE)){
 
-            board.clear_puzzle(x/TILE_SIZE, y/TILE_SIZE);
-            y += TILE_SIZE;
+            board.clear_puzzle(current.x/TILE_SIZE, current.y/TILE_SIZE);
+            current.y += TILE_SIZE;
         }
         else{
             if(gameOver()){
                 gameOver = true;
                 gameOverLabel.setVisible(true);
                 restart.setVisible(true);
-                x = 4 * TILE_SIZE;
-                y = 0;
+                current = new Piece(4 * TILE_SIZE, 0);
 
             }else{
             
-            board.removeLine();
-            x = 4 * TILE_SIZE;
-            y = 0;}
+                board.removeLine();
+                current = new Piece(4 * TILE_SIZE, 0);
+            }
             board.resetMatrix(Board.puzzleQueue[Board.puzzleCount],Puzzle.rotateState);
             Puzzle.rotateState = 0;
             if(Board.puzzleCount == 6){
@@ -72,35 +70,35 @@ class App extends JPanel implements Runnable, KeyListener{
         
         }
 
-        if(down == true && board.is_landed(x/TILE_SIZE, y/TILE_SIZE) == false){
-            y+=TILE_SIZE;
+        if(down == true && board.is_landed(current.x/TILE_SIZE, current.y/TILE_SIZE) == false){
+            current.y+=TILE_SIZE;
         }
 
         if (rotate_right) {
-            RotationResult result = board.canRotate(x / TILE_SIZE, y / TILE_SIZE);
+            RotationResult result = board.canRotate(current.x / TILE_SIZE, current.y / TILE_SIZE);
             if (result.success()) {
                 int new_x = result.x() * TILE_SIZE;
                 int new_y = result.y() * TILE_SIZE;
                 int current_puzzle = result.current_puzzle();
                 Puzzle.shape[current_puzzle] = result.new_shape();
-                x = new_x;
-                y = new_y;
+                current.x = new_x;
+                current.y = new_y;
                 Puzzle.rotateState++;
                 rotate_right = false;
             }
         }
-        if(left && board.canMoveLeft(x/TILE_SIZE, y/TILE_SIZE)){
-            board.clear_puzzle(x/TILE_SIZE, y/TILE_SIZE);
-            x -= TILE_SIZE;
+        if(left && board.canMoveLeft(current.x/TILE_SIZE, current.y/TILE_SIZE)){
+            board.clear_puzzle(current.x/TILE_SIZE, current.y/TILE_SIZE);
+            current.x -= TILE_SIZE;
             left = false;
         }
-        if(right && board.canMoveRight(x/TILE_SIZE, y/TILE_SIZE)){
-            board.clear_puzzle(x/TILE_SIZE, y/TILE_SIZE);
-            x += TILE_SIZE;
+        if(right && board.canMoveRight(current.x/TILE_SIZE, current.y/TILE_SIZE)){
+            board.clear_puzzle(current.x/TILE_SIZE, current.y/TILE_SIZE);
+            current.x += TILE_SIZE;
             right = false;
         }
-        board.clear_puzzle(x/TILE_SIZE, y/TILE_SIZE);
-        board.spawn_puzzle(x/TILE_SIZE, y/TILE_SIZE);
+        board.clear_puzzle(current.x/TILE_SIZE, current.y/TILE_SIZE);
+        board.spawn_puzzle(current.x/TILE_SIZE, current.y/TILE_SIZE);
     }
 
     App(){
