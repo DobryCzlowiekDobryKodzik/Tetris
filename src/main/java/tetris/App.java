@@ -59,12 +59,12 @@ class App extends JPanel implements Runnable, KeyListener {
                 board.removeLine();
                 current = new Piece(4, 0, 0);
             }
-            board.resetMatrix(Board.puzzleQueue[Board.puzzleCount], landedRotation);
-            if (Board.puzzleCount == 6) {
-                Board.puzzleCount = 0;
-                Board.puzzleQueue = Board.Random7bag();
+            board.resetMatrix(board.puzzleQueue[board.puzzleCount], landedRotation);
+            if (board.puzzleCount == 6) {
+                board.puzzleCount = 0;
+                board.puzzleQueue = Board.Random7bag();
             } else {
-                Board.puzzleCount++;
+                board.puzzleCount++;
             }
 
         }
@@ -141,8 +141,8 @@ class App extends JPanel implements Runnable, KeyListener {
     }
 
     public boolean gameOver() {
-        for (int i = 0; i < Puzzle.shape[Board.puzzleQueue[Board.puzzleCount]].length; i++) {
-            for (int j = 0; j < Puzzle.shape[Board.puzzleQueue[Board.puzzleCount]][0].length; j++) {
+        for (int i = 0; i < Puzzle.shape[board.puzzleQueue[board.puzzleCount]].length; i++) {
+            for (int j = 0; j < Puzzle.shape[board.puzzleQueue[board.puzzleCount]][0].length; j++) {
                 if (board.grid[0 + i][4 + j] == 1) {
                     return true;
                 }

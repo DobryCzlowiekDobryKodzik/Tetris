@@ -6,9 +6,9 @@ import java.awt.*;
 class Board{
     int[][] grid = new int[App.ROWS][App.COLUMNS];
     Color[][] tile_color = new Color[App.ROWS][App.COLUMNS];
-    public static int puzzleCount = 0;
+    int puzzleCount = 0;
 
-    public static int[] puzzleQueue = new int[7];
+    int[] puzzleQueue = new int[7];
 
     public record RotationResult(boolean success, int x, int y, int[][] new_shape,int current_puzzle) {
     }
