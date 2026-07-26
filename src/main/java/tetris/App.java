@@ -8,7 +8,7 @@ import tetris.Board.RotationResult;
 
 import java.util.*;
 
-class App extends JPanel implements Runnable, KeyListener{
+class App extends JPanel implements Runnable, KeyListener {
 
     private JLabel gameOverLabel;
     private JButton restart;
@@ -19,8 +19,8 @@ class App extends JPanel implements Runnable, KeyListener{
     static final int HEIGHT = ROWS * TILE_SIZE;
     static final int WIDTH = COLUMNS * TILE_SIZE;
 
-    Piece current = new Piece(4, 0 , 0);
-    
+    Piece current = new Piece(4, 0, 0);
+
     int fallSpeed = 600;
 
     boolean running = false;
@@ -29,48 +29,47 @@ class App extends JPanel implements Runnable, KeyListener{
     boolean down = false;
     boolean rotate_right = false;
     boolean gameOver = false;
-    
+
     Thread gameThread;
 
     Board board = new Board();
 
-    public void start_thread(){
+    public void start_thread() {
         gameThread = new Thread(this);
         running = true;
         gameThread.start();
     }
 
-    public void update(){
+    public void update() {
 
-        if(!board.is_landed(current.x, current.y)){
+        if (!board.is_landed(current.x, current.y)) {
 
             board.clear_puzzle(current.x, current.y);
-            current.y ++;
-        }
-        else{
-            if(gameOver()){
+            current.y++;
+        } else {
+            int landedRotation = current.rotateState;
+            if (gameOver()) {
                 gameOver = true;
                 gameOverLabel.setVisible(true);
                 restart.setVisible(true);
-                current = new Piece(4, 0 , 0);
+                current = new Piece(4, 0, 0);
 
-            }else{
-            
+            } else {
+
                 board.removeLine();
-                current = new Piece(4 , 0 , 0);
+                current = new Piece(4, 0, 0);
             }
-            board.resetMatrix(Board.puzzleQueue[Board.puzzleCount],current.rotateState);
-            current.rotateState = 0;
-            if(Board.puzzleCount == 6){
+            board.resetMatrix(Board.puzzleQueue[Board.puzzleCount], landedRotation);
+            if (Board.puzzleCount == 6) {
                 Board.puzzleCount = 0;
                 Board.puzzleQueue = Board.Random7bag();
-            }else{
+            } else {
                 Board.puzzleCount++;
             }
-        
+
         }
 
-        if(down == true && board.is_landed(current.x, current.y) == false){
+        if (down == true && board.is_landed(current.x, current.y) == false) {
             current.y++;
         }
 
@@ -87,28 +86,28 @@ class App extends JPanel implements Runnable, KeyListener{
                 rotate_right = false;
             }
         }
-        if(left && board.canMoveLeft(current.x, current.y)){
+        if (left && board.canMoveLeft(current.x, current.y)) {
             board.clear_puzzle(current.x, current.y);
-            current.x --;
+            current.x--;
             left = false;
         }
-        if(right && board.canMoveRight(current.x, current.y)){
+        if (right && board.canMoveRight(current.x, current.y)) {
             board.clear_puzzle(current.x, current.y);
-            current.x ++;
+            current.x++;
             right = false;
         }
         board.clear_puzzle(current.x, current.y);
         board.spawn_puzzle(current.x, current.y);
     }
 
-    App(){
+    App() {
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(this);
-        setPreferredSize(new Dimension(WIDTH,HEIGHT));
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
         requestFocusInWindow();
         start_thread();
-        
+
         gameOverLabel = new JLabel("GAME OVER");
         gameOverLabel.setFont(new Font("Arial", Font.BOLD, 48));
         gameOverLabel.setForeground(Color.magenta);
@@ -123,17 +122,17 @@ class App extends JPanel implements Runnable, KeyListener{
         restart = new JButton("RESTART");
 
         restart.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Board.clear_grid();
-            gameOver = false;
-            gameOverLabel.setVisible(false);
-            restart.setVisible(false);
-        }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Board.clear_grid();
+                gameOver = false;
+                gameOverLabel.setVisible(false);
+                restart.setVisible(false);
+            }
         });
 
         restart.setFont(new Font("Arial", Font.BOLD, 30));
-        restart.setBounds(x, 2*y, labelWidth, labelHeight);
+        restart.setBounds(x, 2 * y, labelWidth, labelHeight);
         restart.setBackground(Color.magenta);
         restart.setForeground(Color.WHITE);
         restart.setVisible(false);
@@ -141,10 +140,10 @@ class App extends JPanel implements Runnable, KeyListener{
 
     }
 
-    public boolean gameOver(){
-        for(int i = 0; i < Puzzle.shape[Board.puzzleQueue[Board.puzzleCount]].length; i++){
-            for( int j =0;j<Puzzle.shape[Board.puzzleQueue[Board.puzzleCount]][0].length;j++){
-                if(board.grid[0 + i][4 + j] == 1){
+    public boolean gameOver() {
+        for (int i = 0; i < Puzzle.shape[Board.puzzleQueue[Board.puzzleCount]].length; i++) {
+            for (int j = 0; j < Puzzle.shape[Board.puzzleQueue[Board.puzzleCount]][0].length; j++) {
+                if (board.grid[0 + i][4 + j] == 1) {
                     return true;
                 }
             }
@@ -154,13 +153,13 @@ class App extends JPanel implements Runnable, KeyListener{
 
 
     @Override
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         //grid drawing
-        if(!gameOver){
-            for(int i = 0; i < HEIGHT; i+=TILE_SIZE){
-                for(int j = 0; j < WIDTH; j+=TILE_SIZE){
+        if (!gameOver) {
+            for (int i = 0; i < HEIGHT; i += TILE_SIZE) {
+                for (int j = 0; j < WIDTH; j += TILE_SIZE) {
                     g.drawRect(j, i, TILE_SIZE, TILE_SIZE);
                 }
             }
@@ -168,62 +167,66 @@ class App extends JPanel implements Runnable, KeyListener{
 
 
         //tetermino drawing
-       if(!gameOver){
-             for(int i = 0; i < ROWS;i++){
-                 for(int j = 0; j < COLUMNS; j++){
-                   if(Board.grid[i][j] == 1){
-                      g.setColor(Board.tile_color[i][j]);
-                      g.fillRect(j*TILE_SIZE, i*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                   }
+        if (!gameOver) {
+            for (int i = 0; i < ROWS; i++) {
+                for (int j = 0; j < COLUMNS; j++) {
+                    if (Board.grid[i][j] == 1) {
+                        g.setColor(Board.tile_color[i][j]);
+                        g.fillRect(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    }
                 }
-             }
+            }
         }
 
 
     }
 
     @Override
-    public void run(){
-        while(running){
+    public void run() {
+        while (running) {
             update();
             repaint();
-            try{
+            try {
                 Thread.sleep(fallSpeed);
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.err.println("Katastrofa");
             }
         }
     }
+
     @Override
-    public void keyPressed(KeyEvent e){
-        int keyCode  = e.getKeyCode();
-        if(keyCode  == KeyEvent.VK_RIGHT){
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        if (keyCode == KeyEvent.VK_RIGHT) {
             right = true;
         }
-        if(keyCode  == KeyEvent.VK_LEFT){
+        if (keyCode == KeyEvent.VK_LEFT) {
             left = true;
         }
-        if(keyCode  == KeyEvent.VK_DOWN){
+        if (keyCode == KeyEvent.VK_DOWN) {
             fallSpeed = 100;
         }
-        if(keyCode  == KeyEvent.VK_UP){
+        if (keyCode == KeyEvent.VK_UP) {
             rotate_right = true;
         }
 
     }
+
     @Override
-    public void keyReleased(KeyEvent e){
+    public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if(keyCode  == KeyEvent.VK_DOWN){
+        if (keyCode == KeyEvent.VK_DOWN) {
             fallSpeed = 600;
         }
     }
+
     @Override
-    public void keyTyped(KeyEvent e){
+    public void keyTyped(KeyEvent e) {
 
     }
+
     public static void main(String[] args) {
-        
+
         JFrame window = new JFrame();
         window.setVisible(true);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -8,6 +8,6 @@ public class Piece {
         //this.type=type;
         this.x=x;
         this.y=y;
-       this.rotateState=0;
+       this.rotateState=rotateState;
     }
 }
