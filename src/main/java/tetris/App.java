@@ -19,7 +19,7 @@ class App extends JPanel implements Runnable, KeyListener{
     static final int HEIGHT = ROWS * TILE_SIZE;
     static final int WIDTH = COLUMNS * TILE_SIZE;
 
-    Piece current = new Piece(4, 0);
+    Piece current = new Piece(4, 0 , 0);
     
     int fallSpeed = 600;
 
@@ -52,15 +52,15 @@ class App extends JPanel implements Runnable, KeyListener{
                 gameOver = true;
                 gameOverLabel.setVisible(true);
                 restart.setVisible(true);
-                current = new Piece(4, 0);
+                current = new Piece(4, 0 , 0);
 
             }else{
             
                 board.removeLine();
-                current = new Piece(4 , 0);
+                current = new Piece(4 , 0 , 0);
             }
-            board.resetMatrix(Board.puzzleQueue[Board.puzzleCount],Puzzle.rotateState);
-            Puzzle.rotateState = 0;
+            board.resetMatrix(Board.puzzleQueue[Board.puzzleCount],current.rotateState);
+            current.rotateState = 0;
             if(Board.puzzleCount == 6){
                 Board.puzzleCount = 0;
                 Board.puzzleQueue = Board.Random7bag();
@@ -75,7 +75,7 @@ class App extends JPanel implements Runnable, KeyListener{
         }
 
         if (rotate_right) {
-            RotationResult result = board.canRotate(current.x, current.y);
+            RotationResult result = board.canRotate(current);
             if (result.success()) {
                 int new_x = result.x();
                 int new_y = result.y();
@@ -83,7 +83,7 @@ class App extends JPanel implements Runnable, KeyListener{
                 Puzzle.shape[current_puzzle] = result.new_shape();
                 current.x = new_x;
                 current.y = new_y;
-                Puzzle.rotateState++;
+                current.rotateState++;
                 rotate_right = false;
             }
         }

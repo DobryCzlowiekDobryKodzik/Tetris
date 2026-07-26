@@ -3,7 +3,7 @@ package tetris;
 import java.awt.*;
 
 class Puzzle{
-    public static int rotateState = 0;
+    //public static int rotateState = 0;
     //kolory odpowiadają puzlom cyan to I, magenta to T i tak dalej
     public static final Color[] COLOR = {Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.ORANGE, Color.BLUE, Color.GREEN, Color.RED};
     public static int[][][] shape ={

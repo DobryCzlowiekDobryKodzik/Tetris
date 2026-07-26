@@ -12,7 +12,6 @@ class Board{
 
     public record RotationResult(boolean success, int x, int y, int[][] new_shape,int current_puzzle) {
     }
-
     public static void clear_grid(){
         for(int i = 0; i < App.ROWS; i++){
             for(int j = 0; j < App.COLUMNS; j++){
@@ -20,7 +19,6 @@ class Board{
             }
         }
     }
-
     public String print_board(){
         String string = "";
         for(int i = 0; i < App.ROWS; i++){
@@ -31,7 +29,6 @@ class Board{
         }
         return string;
     }
-
     public int[][] rotateMatrix(int tab[][]){
         
         int rows = tab.length;
@@ -46,7 +43,6 @@ class Board{
         }
         return ret_tab;
     }
-
     public void removeLine(){
         for(int i = 0; i < App.ROWS; i++){
             boolean remove = true;
@@ -69,7 +65,6 @@ class Board{
             }
         }
     }
-
     public void clear_puzzle(int current_x, int current_y){
         final int x = current_x;
         int puzzle = puzzleQueue[puzzleCount];
@@ -99,8 +94,6 @@ class Board{
         }
         return temp_grid;
     }
-
-    
     public void spawn_puzzle(int current_x, int current_y){
         final int x = current_x;
         int puzzle = puzzleQueue[puzzleCount];
@@ -116,7 +109,6 @@ class Board{
             current_y++;
         }
     }
-    
     public boolean try_spawn_puzzle(int current_x, int current_y, int[][] temp_grid, int[][] new_tab){
         final int x = current_x;
         for(int i = 0; i < new_tab.length; i++){
@@ -134,7 +126,6 @@ class Board{
         }
         return true;
     }
-
     public void resetMatrix(int tetermino,int count){
             switch(tetermino){
                 case 0:
@@ -173,7 +164,6 @@ class Board{
         }
         return true;
     }
-
     public boolean canMoveRight(int x, int y){
         int current_puzzle = puzzleQueue[puzzleCount];
         if(x + Puzzle.shape[current_puzzle][0].length >= App.COLUMNS){
@@ -194,7 +184,6 @@ class Board{
         }
         return true;
     }
-
     public boolean is_landed(int x, int y){
         int current_puzzle = puzzleQueue[puzzleCount];
         for(int i = 0; i < Puzzle.shape[current_puzzle][0].length; i++){
@@ -215,10 +204,9 @@ class Board{
         return false;
 
     }
-
-    
-
-    public RotationResult canRotate(int x, int y){
+    public RotationResult canRotate(Piece current){
+        int x = current.x;
+        int y = current.y;
         int current_puzzle = puzzleQueue[puzzleCount];
         int[][] temp_grid = new int[App.ROWS][App.COLUMNS];
         for(int i = 0; i < App.ROWS; i++){
@@ -232,7 +220,7 @@ class Board{
             case 2:
                 return new RotationResult(true, x, y, Puzzle.shape[current_puzzle],current_puzzle);
             case 3:
-                if(Puzzle.rotateState % 4 == 0){
+                if(current.rotateState % 4 == 0){
                         if(x - 1 < 0){
                             return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                         }
@@ -247,7 +235,7 @@ class Board{
                             return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
 
                 }
-                if(Puzzle.rotateState % 4 == 1){
+                if(current.rotateState % 4 == 1){
                     if(y - 1 < 0){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -260,7 +248,7 @@ class Board{
                     else{
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
                 }
-                if(Puzzle.rotateState % 4 == 2){
+                if(current.rotateState % 4 == 2){
                     if(x + 2 >= App.COLUMNS){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -272,7 +260,7 @@ class Board{
                     else{
                         return new RotationResult(false, x, y, Puzzle.shape[current_puzzle],current_puzzle);}
                 }
-                if(Puzzle.rotateState % 4 == 3){
+                if(current.rotateState % 4 == 3){
                     if(y + 2 >= App.ROWS){
                         return new RotationResult(false, x, y, Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -288,7 +276,7 @@ class Board{
                 }
             break;
             case 4:
-                if(Puzzle.rotateState % 4 == 0){
+                if(current.rotateState % 4 == 0){
                         if(x + 2 >= App.COLUMNS){
                             return new RotationResult(false, x, y, Puzzle.shape[current_puzzle],current_puzzle);
                         }
@@ -301,7 +289,7 @@ class Board{
                             return new RotationResult(false, x, y ,Puzzle.shape[current_puzzle],current_puzzle);}
 
                 }
-                if(Puzzle.rotateState % 4 == 1){
+                if(current.rotateState % 4 == 1){
                     if(y + 2 >= App.ROWS){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -314,7 +302,7 @@ class Board{
                     else{
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
                 }
-                if(Puzzle.rotateState % 4 == 2){
+                if(current.rotateState % 4 == 2){
                     if(x - 1 < 0){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -328,7 +316,7 @@ class Board{
                     else{
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
                 }
-                if(Puzzle.rotateState % 4 == 3){
+                if(current.rotateState % 4 == 3){
                     if(y - 1 < 0){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -343,7 +331,7 @@ class Board{
                 }
             break;
             case 6:
-                if(Puzzle.rotateState % 2 == 0){
+                if(current.rotateState % 2 == 0){
                     if(y - 1 < 0){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -356,23 +344,23 @@ class Board{
                     }
                     else{return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
                 }
-                    if(Puzzle.rotateState % 2 == 1){
+                    if(current.rotateState % 2 == 1){
                         if(x - 1 < 0){
                             return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
-                        }     
+                        }
                     temp_grid = clear_rot_puzzle(x, y, temp_grid);
-                    y+=1;
-                    x-=1;
+                        y+=1;
+                        x-=1;
                     temp_tab = rotateMatrix(Puzzle.shape[current_puzzle]);
                     if(try_spawn_puzzle(x,y,temp_grid,temp_tab)){
                         return new RotationResult(true, x, y,temp_tab,current_puzzle);
                     }
                     else{return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
                 }
-                
+
                 break;
                 case 5:
-                if(Puzzle.rotateState % 2 == 0){
+                if(current.rotateState % 2 == 0){
                     if(y - 1 < 0){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -385,7 +373,7 @@ class Board{
                     }
                     else{return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
                 }
-                if(Puzzle.rotateState % 2 == 1){
+                if(current.rotateState % 2 == 1){
                     if(x - 1 < 0){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -400,7 +388,7 @@ class Board{
                 }
                 break;
                 case 1:
-                    if(Puzzle.rotateState % 4 == 0){
+                    if(current.rotateState % 4 == 0){
                         if(x + 2 >= App.COLUMNS){
                             return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                         }
@@ -413,7 +401,7 @@ class Board{
                         else{return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
 
                     }
-                    if(Puzzle.rotateState % 4 == 1){
+                    if(current.rotateState % 4 == 1){
                         if(x + 2 >= App.COLUMNS){
                             return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                         }
@@ -422,9 +410,9 @@ class Board{
                         if(try_spawn_puzzle(x,y,temp_grid,temp_tab)){
                             return new RotationResult(true, x, y,temp_tab,current_puzzle);
                         }
-                        else{return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}   
+                        else{return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
                     }
-                    if(Puzzle.rotateState % 4 == 2){
+                    if(current.rotateState % 4 == 2){
                         if(y + 2 >= App.ROWS){
                             return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                         }
@@ -436,7 +424,7 @@ class Board{
                         }
                         else{return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
                     }
-                    if(Puzzle.rotateState % 4 == 3){
+                    if(current.rotateState % 4 == 3){
                         if(x - 1 <= 0){
                             return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                         }
@@ -451,7 +439,7 @@ class Board{
                     }
                     break;
             case 0:
-                if(Puzzle.rotateState % 2 == 0){
+                if(current.rotateState % 2 == 0){
                     if(x - 2 < 0 || x + 1 >= App.COLUMNS){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -463,7 +451,7 @@ class Board{
                     }
                     else{return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);}
                 }
-                if(Puzzle.rotateState % 2 == 1){
+                if(current.rotateState % 2 == 1){
                     if(y - 2 < 0 || y + 1 >= App.ROWS){
                         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
                     }
@@ -477,11 +465,9 @@ class Board{
                 }
         break;
 
-        }        
+        }
         return new RotationResult(false, x, y,Puzzle.shape[current_puzzle],current_puzzle);
     }
-
-
     //Random tetromino selection
     public static int[] Random7bag(){
         Random rand = new Random();
