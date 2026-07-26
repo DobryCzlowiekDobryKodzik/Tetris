@@ -4,15 +4,15 @@ import java.util.*;
 import java.awt.*;
 
 class Board{
-    static int[][] grid = new int[App.ROWS][App.COLUMNS];
-    static Color[][] tile_color = new Color[App.ROWS][App.COLUMNS];
+    int[][] grid = new int[App.ROWS][App.COLUMNS];
+    Color[][] tile_color = new Color[App.ROWS][App.COLUMNS];
     public static int puzzleCount = 0;
 
     public static int[] puzzleQueue = new int[7];
 
     public record RotationResult(boolean success, int x, int y, int[][] new_shape,int current_puzzle) {
     }
-    public static void clear_grid(){
+    public void clear_grid(){
         for(int i = 0; i < App.ROWS; i++){
             for(int j = 0; j < App.COLUMNS; j++){
                 grid[i][j]=0;

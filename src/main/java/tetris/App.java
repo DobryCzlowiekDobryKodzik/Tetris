@@ -124,7 +124,7 @@ class App extends JPanel implements Runnable, KeyListener {
         restart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Board.clear_grid();
+                board.clear_grid();
                 gameOver = false;
                 gameOverLabel.setVisible(false);
                 restart.setVisible(false);
@@ -170,8 +170,8 @@ class App extends JPanel implements Runnable, KeyListener {
         if (!gameOver) {
             for (int i = 0; i < ROWS; i++) {
                 for (int j = 0; j < COLUMNS; j++) {
-                    if (Board.grid[i][j] == 1) {
-                        g.setColor(Board.tile_color[i][j]);
+                    if (board.grid[i][j] == 1) {
+                        g.setColor(board.tile_color[i][j]);
                         g.fillRect(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                     }
                 }
