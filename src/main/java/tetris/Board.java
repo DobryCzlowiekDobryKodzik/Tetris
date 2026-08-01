@@ -65,18 +65,13 @@ class Board{
             }
         }
     }
-    public void clear_puzzle(int current_x, int current_y){
-        final int x = current_x;
-        int puzzle = puzzleQueue[puzzleCount];
-        for(int i = 0; i < Puzzle.shape[puzzle].length; i++){
-            current_x = x;
-            for(int j = 0; j < Puzzle.shape[puzzle][i].length; j++){
-                if(Puzzle.shape[puzzle][i][j] == 1){
-                    grid[current_y][current_x] = 0;
+    public void clear_puzzle(Piece current){
+        for(int i = 0; i < current.cells.length; i++){
+            for(int j = 0; j < current.cells[i].length; j++){
+                if(current.cells[i][j] == 1){
+                    grid[current.y + i][current.x + j] = 0;
                 }
-                current_x++;
             }
-            current_y++;
         }
     }
     public int[][] clear_rot_puzzle(int current_x, int current_y, int[][] temp_grid){
@@ -94,19 +89,18 @@ class Board{
         }
         return temp_grid;
     }
-    public void spawn_puzzle(int current_x, int current_y){
-        final int x = current_x;
-        int puzzle = puzzleQueue[puzzleCount];
-        for(int i = 0; i < Puzzle.shape[puzzle].length; i++){
-            current_x = x;
-            for(int j = 0; j < Puzzle.shape[puzzle][i].length; j++){
-                if(Puzzle.shape[puzzle][i][j] == 1){
-                        grid[current_y][current_x] = 1;
-                        tile_color[current_y][current_x] = Puzzle.COLOR[puzzle];
+    public void spawn_puzzle(Piece current){
+        //int puzzle = puzzleQueue[puzzleCount];
+        for(int i = 0; i < current.cells.length; i++){
+
+            for(int j = 0; j < current.cells[i].length; j++){
+                if(current.cells[i][j] == 1){
+                        grid[current.y + i][current.x + j] = 1;
+                        //tile_color[current.y + i][current.x + j] = Puzzle.COLOR[puzzle];
+                        tile_color[current.y + i][current.x + j] = Puzzle.COLOR[current.type];
                 }
-                current_x++;
+
             }
-            current_y++;
         }
     }
     public boolean try_spawn_puzzle(int current_x, int current_y, int[][] temp_grid, int[][] new_tab){
