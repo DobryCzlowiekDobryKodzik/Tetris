@@ -19,7 +19,8 @@ class App extends JPanel implements Runnable, KeyListener {
     static final int HEIGHT = ROWS * TILE_SIZE;
     static final int WIDTH = COLUMNS * TILE_SIZE;
 
-    Piece current = new Piece(4, 0, 0);
+    Board board = new Board();
+    Piece current = new Piece(4, 0, 0,board.puzzleQueue[board.puzzleCount]);
 
     int fallSpeed = 600;
 
@@ -32,7 +33,7 @@ class App extends JPanel implements Runnable, KeyListener {
 
     Thread gameThread;
 
-    Board board = new Board();
+
 
     public void start_thread() {
         gameThread = new Thread(this);
@@ -42,34 +43,30 @@ class App extends JPanel implements Runnable, KeyListener {
 
     public void update() {
 
-        if (!board.is_landed(current.x, current.y)) {
+        if (!board.is_landed(current)) {
 
-            board.clear_puzzle(current.x, current.y);
+            board.clear_puzzle(current);
             current.y++;
         } else {
-            int landedRotation = current.rotateState;
             if (gameOver()) {
                 gameOver = true;
                 gameOverLabel.setVisible(true);
                 restart.setVisible(true);
-                current = new Piece(4, 0, 0);
 
             } else {
 
                 board.removeLine();
-                current = new Piece(4, 0, 0);
             }
-            board.resetMatrix(board.puzzleQueue[board.puzzleCount], landedRotation);
             if (board.puzzleCount == 6) {
                 board.puzzleCount = 0;
                 board.puzzleQueue = Board.Random7bag();
             } else {
                 board.puzzleCount++;
             }
-
+            current = new Piece(4, 0, 0,board.puzzleQueue[board.puzzleCount]);
         }
 
-        if (down == true && board.is_landed(current.x, current.y) == false) {
+        if (down == true && board.is_landed(current) == false) {
             current.y++;
         }
 
@@ -78,26 +75,25 @@ class App extends JPanel implements Runnable, KeyListener {
             if (result.success()) {
                 int new_x = result.x();
                 int new_y = result.y();
-                int current_puzzle = result.current_puzzle();
-                Puzzle.shape[current_puzzle] = result.new_shape();
+                current.cells = result.new_shape();
                 current.x = new_x;
                 current.y = new_y;
                 current.rotateState++;
                 rotate_right = false;
             }
         }
-        if (left && board.canMoveLeft(current.x, current.y)) {
-            board.clear_puzzle(current.x, current.y);
+        if (left && board.canMoveLeft(current)) {
+            board.clear_puzzle(current);
             current.x--;
             left = false;
         }
-        if (right && board.canMoveRight(current.x, current.y)) {
-            board.clear_puzzle(current.x, current.y);
+        if (right && board.canMoveRight(current)) {
+            board.clear_puzzle(current);
             current.x++;
             right = false;
         }
-        board.clear_puzzle(current.x, current.y);
-        board.spawn_puzzle(current.x, current.y);
+        board.clear_puzzle(current);
+        board.spawn_puzzle(current);
     }
 
     App() {
