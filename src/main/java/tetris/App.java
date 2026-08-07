@@ -24,10 +24,7 @@ class App extends JPanel implements KeyListener {
 
     int fallSpeed = 600;
 
-    boolean right = false;
-    boolean left = false;
     boolean down = false;
-    boolean rotate_right = false;
     boolean gameOver = false;
 
     javax.swing.Timer gameTimer;
@@ -66,34 +63,43 @@ class App extends JPanel implements KeyListener {
             current = new Piece(4, 0, 0,board.puzzleQueue[board.puzzleCount]);
         }
 
-        if (down == true && board.is_landed(current) == false) {
-            current.y++;
-        }
 
-        if (rotate_right) {
-            RotationResult result = board.canRotate(current);
-            if (result.success()) {
-                int new_x = result.x();
-                int new_y = result.y();
-                current.cells = result.new_shape();
-                current.x = new_x;
-                current.y = new_y;
-                current.rotateState++;
-                rotate_right = false;
-            }
-        }
-        if (left && board.canMoveLeft(current)) {
-            board.clear_puzzle(current);
-            current.x--;
-            left = false;
-        }
-        if (right && board.canMoveRight(current)) {
-            board.clear_puzzle(current);
-            current.x++;
-            right = false;
-        }
         board.clear_puzzle(current);
         board.spawn_puzzle(current);
+    }
+
+    private void moveLeft() {
+        if (gameOver) return;
+        if (board.canMoveLeft(current)) {
+            board.clear_puzzle(current);
+            current.x--;
+            board.spawn_puzzle(current);
+            repaint();
+        }
+    }
+
+    private void moveRight() {
+        if (gameOver) return;
+        if (board.canMoveRight(current)) {
+            board.clear_puzzle(current);
+            current.x++;
+            board.spawn_puzzle(current);
+            repaint();
+        }
+    }
+
+    private void rotate() {
+        if (gameOver) return;
+        RotationResult result = board.canRotate(current);
+        if (result.success()) {
+            board.clear_puzzle(current);
+            current.cells = result.new_shape();
+            current.x = result.x();
+            current.y = result.y();
+            current.rotateState++;
+            board.spawn_puzzle(current);
+            repaint();
+        }
     }
 
     App() {
@@ -116,20 +122,17 @@ class App extends JPanel implements KeyListener {
 
         restart = new JButton("RESTART");
 
-        restart.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                board.clear_grid();
-                board.puzzleCount = 0;
-                board.puzzleQueue = Board.Random7bag();
-                current = new Piece(4, 0, 0, board.puzzleQueue[board.puzzleCount]);
-                gameOver = false;
-                gameOverLabel.setVisible(false);
-                restart.setVisible(false);
-                requestFocusInWindow();
-                gameTimer.start();
-                repaint();
-            }
+        restart.addActionListener(e -> {
+            board.clear_grid();
+            board.puzzleCount = 0;
+            board.puzzleQueue = Board.Random7bag();
+            current = new Piece(4, 0, 0, board.puzzleQueue[board.puzzleCount]);
+            gameOver = false;
+            gameOverLabel.setVisible(false);
+            restart.setVisible(false);
+            requestFocusInWindow();
+            gameTimer.start();
+            repaint();
         });
 
         restart.setFont(new Font("Arial", Font.BOLD, 30));
@@ -187,10 +190,10 @@ class App extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_RIGHT) {
-            right = true;
+            moveRight();
         }
         if (keyCode == KeyEvent.VK_LEFT) {
-            left = true;
+            moveLeft();
         }
         if (keyCode == KeyEvent.VK_DOWN) {
             fallSpeed = 100;
@@ -199,7 +202,7 @@ class App extends JPanel implements KeyListener {
             }
         }
         if (keyCode == KeyEvent.VK_UP) {
-            rotate_right = true;
+            rotate();
         }
 
     }
