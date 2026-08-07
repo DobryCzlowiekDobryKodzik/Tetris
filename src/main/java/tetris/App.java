@@ -8,7 +8,7 @@ import tetris.Board.RotationResult;
 
 import java.util.*;
 
-class App extends JPanel implements Runnable, KeyListener {
+class App extends JPanel implements KeyListener {
 
     private JLabel gameOverLabel;
     private JButton restart;
@@ -24,21 +24,20 @@ class App extends JPanel implements Runnable, KeyListener {
 
     int fallSpeed = 600;
 
-    boolean running = false;
     boolean right = false;
     boolean left = false;
     boolean down = false;
     boolean rotate_right = false;
     boolean gameOver = false;
 
-    Thread gameThread;
+    javax.swing.Timer gameTimer;
 
-
-
-    public void start_thread() {
-        gameThread = new Thread(this);
-        running = true;
-        gameThread.start();
+    public void startGame() {
+        gameTimer = new javax.swing.Timer(fallSpeed, e -> {
+            update();
+            repaint();
+        });
+        gameTimer.start();
     }
 
     public void update() {
@@ -52,7 +51,8 @@ class App extends JPanel implements Runnable, KeyListener {
                 gameOver = true;
                 gameOverLabel.setVisible(true);
                 restart.setVisible(true);
-
+                gameTimer.stop();
+                return;
             } else {
 
                 board.removeLine();
@@ -102,7 +102,6 @@ class App extends JPanel implements Runnable, KeyListener {
         addKeyListener(this);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         requestFocusInWindow();
-        start_thread();
 
         gameOverLabel = new JLabel("GAME OVER");
         gameOverLabel.setFont(new Font("Arial", Font.BOLD, 48));
@@ -121,9 +120,15 @@ class App extends JPanel implements Runnable, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 board.clear_grid();
+                board.puzzleCount = 0;
+                board.puzzleQueue = Board.Random7bag();
+                current = new Piece(4, 0, 0, board.puzzleQueue[board.puzzleCount]);
                 gameOver = false;
                 gameOverLabel.setVisible(false);
                 restart.setVisible(false);
+                requestFocusInWindow();
+                gameTimer.start();
+                repaint();
             }
         });
 
@@ -134,6 +139,7 @@ class App extends JPanel implements Runnable, KeyListener {
         restart.setVisible(false);
         add(restart);
 
+        startGame();
     }
 
     public boolean gameOver() {
@@ -178,19 +184,6 @@ class App extends JPanel implements Runnable, KeyListener {
     }
 
     @Override
-    public void run() {
-        while (running) {
-            update();
-            repaint();
-            try {
-                Thread.sleep(fallSpeed);
-            } catch (Exception e) {
-                System.err.println("Katastrofa");
-            }
-        }
-    }
-
-    @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_RIGHT) {
@@ -201,6 +194,9 @@ class App extends JPanel implements Runnable, KeyListener {
         }
         if (keyCode == KeyEvent.VK_DOWN) {
             fallSpeed = 100;
+            if (gameTimer != null) {
+                gameTimer.setDelay(fallSpeed);
+            }
         }
         if (keyCode == KeyEvent.VK_UP) {
             rotate_right = true;
@@ -213,6 +209,9 @@ class App extends JPanel implements Runnable, KeyListener {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_DOWN) {
             fallSpeed = 600;
+            if (gameTimer != null) {
+                gameTimer.setDelay(fallSpeed);
+            }
         }
     }
 
@@ -222,17 +221,17 @@ class App extends JPanel implements Runnable, KeyListener {
     }
 
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame window = new JFrame("Tetris");
+            window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            window.setResizable(false);
 
-        JFrame window = new JFrame();
-        window.setVisible(true);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
-
-        App panel = new App();
-        // panel.setLayout(new GridLayout(2,1));
-        window.add(panel);
-        window.pack();
-        panel.requestFocus();
-        panel.requestFocusInWindow();
+            App panel = new App();
+            window.add(panel);
+            window.pack();
+            window.setLocationRelativeTo(null);
+            window.setVisible(true);
+            panel.requestFocusInWindow();
+        });
     }
 }
