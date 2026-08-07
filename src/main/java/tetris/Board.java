@@ -52,16 +52,16 @@ class Board{
                 }
             }
             if(remove){
-                for(int j = 0; j < App.COLUMNS; j++){
-                    grid[i][j] = 0;
-                }
                 for(int k = i; k > 0; k--){
                     for(int j = 0; j < App.COLUMNS; j++){
                         grid[k][j] = grid[k - 1][j];
                         tile_color[k][j] = tile_color[k - 1][j];
                     }
                 }
-
+                for(int j = 0; j < App.COLUMNS; j++){
+                    grid[0][j] = 0;
+                    tile_color[0][j] = null;
+                }
             }
         }
     }
